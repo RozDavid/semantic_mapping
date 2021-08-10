@@ -1,0 +1,1 @@
+rosbag record /hp_laptop/aligned_depth_to_color/camera_info /hp_laptop/aligned_depth_to_color/image_raw /hp_laptop/color/camera_info /hp_laptop/color/image_color /hp_laptop/extrinsics/depth_to_color /tf /tf_static

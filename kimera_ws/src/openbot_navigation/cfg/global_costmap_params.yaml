@@ -1,0 +1,12 @@
+rolling_window: false
+track_unknown_space: false
+
+width: 20.0
+height: 20.0
+resolution: 0.025
+origin_x: -10.0
+origin_y: -10.0
+
+plugins:
+  - {name: obstacle_layer,         type: "costmap_2d::ObstacleLayer"}
+  - {name: inflation,               type: "costmap_2d::InflationLayer"}

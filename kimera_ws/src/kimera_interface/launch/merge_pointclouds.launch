@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<launch>
+
+    <arg name="input_cloud_topics" default="[/hp_laptop/semantics/semantic_cloud, /timon_jetson/semantics/semantic_cloud]"/>
+    <arg name="target_frame" default="timon_jetson_link" />
+    <arg name="tf_timeout" default="0.5" />
+    <arg name="output_topic_name" default="merged_cloud" />
+    
+
+    <node name="pointcloud_transformer_node" pkg="kimera_interface" type="pointcloud_transformer_node">
+       
+        <rosparam param="input_cloud_topics" subst_value="True">$(arg input_cloud_topics)</rosparam>
+        <param name="target_frame" value="$(arg scale)"/>
+        <param name="tf_timeout" value="$(arg tf_timeout)"/>
+        <param name="output_topic_name" value="$(arg output_topic_name)"/>
+	
+    </node>
+
+</launch>

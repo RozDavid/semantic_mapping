@@ -1,0 +1,30 @@
+# http://wiki.ros.org/base_local_planner
+
+OpenBotTrajectoryPlanner:
+
+  acc_lim_x:  0.5
+  acc_lim_y:  0.5
+  acc_lim_theta: 4.00
+  max_vel_x:  0.300
+  min_vel_x:  0.01
+  max_rotational_vel: 0.550
+  min_in_place_rotational_vel: 0.15
+  escape_vel: -0.10
+  holonomic_robot: false
+
+  xy_goal_tolerance:  0.20
+  yaw_goal_tolerance: 0.20
+
+  sim_time: 1.7
+  sim_granularity: 0.025
+  vx_samples: 3
+  vtheta_samples: 20
+
+  goal_distance_bias: 0.2
+  path_distance_bias: 0.3
+  occdist_scale: 0.01
+  heading_lookahead: 0.325
+  dwa: true
+
+  oscillation_reset_dist: 0.1
+  meter_scoring: true

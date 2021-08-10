@@ -1,0 +1,104 @@
+<launch>
+    <!-- Reconstruction detail parameters --> 
+    <arg name="voxel_size" default="0.02"/>
+    <arg name="max_ray_length_m" default="5.0"/>
+    
+    <!-- Set ros server param according to the starting script --> 
+    <arg name="should_use_sim_time" default="false" />
+    <param name="use_sim_time" value="$(arg should_use_sim_time)" />
+    
+    <!-- Play from BAG file -->
+    <arg name="play_bag" default="true"/>
+    <arg name="rosbag_rate" default="1.5"/>
+    <arg name="bag_file" default="$(find kimera_interface)/../../../../resources/habitat/frl_1_noise3.bag"/>
+    <node name="player" pkg="rosbag" type="play" output="screen"
+          args="--clock --quiet --rate $(arg rosbag_rate) $(arg bag_file)"  if="$(arg play_bag)">
+    </node>
+
+    <!-- If working with compressed bagfiles -->
+    <arg name="use_compressed_bag" default="false"/>
+
+    <!-- Hostname and frame settings --> 
+    <arg name="sensor_frame" default="habitat_rgb_frame"/>
+    <arg name="pointcloud_frame" default="habitat_pointcloud_frame"/>
+    <arg name="odometry_frame" default="habitat_odometry_frame"/>
+
+    <!-- If you just want to run 3D reconstruction without semantics, set this flag to false-->
+    <arg name="metric_semantic_reconstruction" default="false"/>
+
+    <!--For semantic reconstruction we need the color mapping-->
+    <arg name="semantic_label_file_path" default="$(find kimera_interface)/cfg/sunrgbd_with_colors.csv"/>
+
+    <!-- Input Topics-->   
+    <!--<arg name="semantic_pointcloud" default="/points2"/>-->
+    <arg name="semantic_pointcloud" default="/semantics/semantic_cloud"/>
+    <arg name="left_cam_info_topic" default="/habitat/rgb/camera_info"/>
+    <arg name="left_cam_topic" default="/habitat/rgb/image_raw"/>
+    <arg name="left_cam_segmentation_topic" default="/semantics/semantic_image"/>
+    <arg name="left_cam_depth_topic" default="/habitat/depth/image_raw"/>
+    <arg name="use_freespace_pointcloud" default="false"/>
+    <arg name="freespace_pointcloud" default="/dev/null"/>
+
+    <!-- Set the encoding for rosbag images types-->
+    <group if="$(arg use_compressed_bag)">
+        
+        <arg name="rgb_encoding" default="compressed"/> <!-- raw/compressed/theora-->
+        <arg name="depth_encoding" default="compressedDepth"/> <!-- raw/compressedDepth-->
+
+        <node name="republish_rgb" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_topic) raw out:=$(arg left_cam_topic)" />
+        <node name="republish_depth" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_depth_topic) raw out:=$(arg left_cam_depth_topic)" />
+    </group>
+
+    <group unless="$(arg use_compressed_bag)">
+        <!-- Input Image encodings-->
+        <arg name="rgb_encoding" default="raw"/> <!-- raw/compressed/theora-->
+        <arg name="depth_encoding" default="raw"/> <!-- raw/compressedDepth-->
+    </group>
+
+    <!-- Generate input pointcloud with semantic labels for kimera-semantics:
+     - Using the depth image and registered semantic image.-->
+    <arg name="publish_point_clouds" default="true"/>
+    <arg name="queue_size" default="100"/>
+	<arg name="max_interval_duration" default="0.05"/>
+    <arg name="filter_transform_outliers" default="true"/>
+    <arg name="translation_treshold" default="5.0"/>
+    <arg name="rotation_treshold" default="1.0"/>
+    <arg name="timestamp_difference_limit" default="3"/>
+
+    <node type="rviz" name="rviz_kimera_interface" pkg="rviz" args="-d $(find kimera_interface)/rviz/kimera_habitat_metric.rviz"/>
+
+    <!-- Transform optical to SLAM frame, depends on the tf frame which one to choose-->
+     <node pkg="tf" type="static_transform_publisher" name="static_frame_pointcloud" args="0 0 0 0.5 -0.5 0.5 -0.5 $(arg sensor_frame) $(arg pointcloud_frame) 100"/>
+    <!--<node pkg="tf" type="static_transform_publisher" name="static_frame_pointcloud" args="0 0 0 0.0 0.0 0.0 1 $(arg sensor_frame) $(arg pointcloud_frame) 100"/>-->
+    
+     <!-- Include the reconsruction pipeline-->  
+    <include file="$(find kimera_interface)/launch/reconstruction_pipeline.launch">
+        <arg name="voxel_size" value="$(arg voxel_size)"/>ro
+        <arg name="max_ray_length_m" value="$(arg max_ray_length_m)"/>
+        <arg name="sensor_frame" value="$(arg sensor_frame)"/>
+        <arg name="pointcloud_frame" value="$(arg pointcloud_frame)"/>
+        <arg name="odometry_frame" value="$(arg odometry_frame)"/>
+        <arg name="metric_semantic_reconstruction" value="$(arg metric_semantic_reconstruction)"/>
+        <arg name="semantic_label_file_path" value="$(arg semantic_label_file_path)"/>
+        <arg name="semantic_pointcloud" value="$(arg semantic_pointcloud)"/>
+        <arg name="left_cam_info_topic" value="$(arg left_cam_info_topic)"/>
+        <arg name="left_cam_topic" value="$(arg left_cam_topic)"/>
+        <arg name="left_cam_segmentation_topic" value="$(arg left_cam_segmentation_topic)"/>
+        <arg name="left_cam_depth_topic" value="$(arg left_cam_depth_topic)"/>
+        <arg name="rgb_encoding" value="$(arg rgb_encoding)"/>
+        <arg name="depth_encoding" value="$(arg depth_encoding)"/>
+        <arg name="use_freespace_pointcloud" value="$(arg use_freespace_pointcloud)"/>
+        <arg name="freespace_pointcloud" value="$(arg freespace_pointcloud)"/>
+        <arg name="publish_point_clouds" value="$(arg publish_point_clouds)"/>
+        <arg name="queue_size"  value="$(arg queue_size)"/>
+        <arg name="max_interval_duration"  value="$(arg max_interval_duration)"/>
+        <arg name="filter_transform_outliers"  value="$(arg filter_transform_outliers)"/>
+        <arg name="translation_treshold"  value="$(arg translation_treshold)"/>
+        <arg name="rotation_treshold"  value="$(arg rotation_treshold)"/>
+        <arg name="timestamp_difference_limit"  value="$(arg timestamp_difference_limit)"/>
+    </include>
+
+
+</launch>
+
+

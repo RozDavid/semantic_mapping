@@ -1,0 +1,4 @@
+name,target_r,target_g,target_b,label_r,label_g,label_b,treshold,label_id
+red_beanbag,190,85,50,200,80,50,0.4,0
+black_beanbag, 0, 0, 0, 250, 250, 250,0.7, 1
+green_sofa,65,150,100,120,130,100,0.6,2

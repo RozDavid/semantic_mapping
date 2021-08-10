@@ -1,0 +1,3 @@
+name,target_r,target_g,target_b,label_r,label_g,label_b,treshold,label_id
+Sofa,150,100,60,255,0,0,0.25,0
+Wall, 225, 225, 225, 0, 0, 255, 0.85, 1

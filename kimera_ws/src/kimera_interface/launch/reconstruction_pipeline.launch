@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<launch>
+
+    <!--Passed params-->
+    <arg name="voxel_size"/>
+    <arg name="max_ray_length_m"/>
+    <arg name="sensor_frame"/>
+    <arg name="pointcloud_frame"/>
+    <arg name="odometry_frame"/>
+    <arg name="metric_semantic_reconstruction"/>
+    <arg name="semantic_label_file_path"/>
+    <arg name="semantic_pointcloud"/>
+    <arg name="left_cam_info_topic"/>
+    <arg name="left_cam_topic"/>
+    <arg name="left_cam_segmentation_topic"/>
+    <arg name="left_cam_depth_topic"/>
+    <arg name="use_freespace_pointcloud"/>
+    <arg name="freespace_pointcloud"/>
+    <arg name="publish_point_clouds"/>
+    <arg name="queue_size"/>
+    <arg name="max_interval_duration"/>
+    <arg name="filter_transform_outliers"/>
+    <arg name="translation_treshold"/>
+    <arg name="rotation_treshold"/>
+    <arg name="timestamp_difference_limit"/>
+    <arg name="rgb_encoding"/>
+    <arg name="depth_encoding"/>
+    
+
+    <!-- Generate input pointcloud with semantic labels for kimera-semantics:
+    - Using the depth image and registered semantic image.-->
+    <group if="$(arg publish_point_clouds)">
+        <!-- Converts registered depth image and RGB image into an RGB pointcloud.
+         Using depth and semantic image, it generates semantic pointcloud. We only
+        run this if we are not using stereo depth reconstruction instead. -->
+        <node pkg="kimera_interface" type="cloud_filter_node" name="cloud_filter_node" output="screen">
+            <!-- Input -->
+            <param name="camera_info_topic_name" value="$(arg left_cam_info_topic)"/>
+            <param name="color_topic_name" value="$(arg left_cam_segmentation_topic)" if="$(arg metric_semantic_reconstruction)"/>
+            <param name="color_topic_name" value="$(arg left_cam_topic)" unless="$(arg metric_semantic_reconstruction)"/>
+            <param name="depth_topic_name" value="$(arg left_cam_depth_topic)"/>
+            
+            <!-- Encodings -->
+            <param name="rgb_encoding" value="$(arg rgb_encoding)" />
+            <param name="depth_encoding" value="$(arg depth_encoding)"/>
+            
+            <!-- Output -->
+            <param name="pointcloud_topic_name" value="$(arg semantic_pointcloud)"/>
+            
+            <!-- Params -->
+            <param name="queue_size" value="20"/>
+	        <param name="max_interval_duration" value="$(arg max_interval_duration)"/>
+            <param name="translation_treshold" value="$(arg translation_treshold)"/>
+	        <param name="rotation_treshold" value="$(arg rotation_treshold)"/>
+	        <param name="timestamp_difference_limit" value="$(arg timestamp_difference_limit)"/>
+
+            <!-- TF frames -->
+            <param name="source_frame" value="$(arg odometry_frame)"/>
+	        <param name="target_frame" value="$(arg sensor_frame)"/>
+            <param name="pointcloud_frame" value="$(arg pointcloud_frame)"/>
+        </node>
+    </group>
+
+
+    <arg name="pkg_type" default="kimera_semantics_ros" if="$(arg metric_semantic_reconstruction)"/>
+    <arg name="server_type" default="kimera_semantics_node" if="$(arg metric_semantic_reconstruction)"/>
+    <arg name="pkg_type" default="voxblox_ros" unless="$(arg metric_semantic_reconstruction)"/>
+    <arg name="server_type" default="tsdf_server" unless="$(arg metric_semantic_reconstruction)"/>
+    <node name="kimera_semantics_node" pkg="$(arg pkg_type)" type="$(arg server_type)" output="screen" args="-alsologtostderr -colorlogtostderr" clear_params="true">
+        <!-- Input -->
+        <remap from="pointcloud" to="$(arg semantic_pointcloud)"/>
+        <!-- Params -->
+        <param name="tsdf_voxel_size" value="$(arg voxel_size)"/>
+        <param name="tsdf_voxels_per_side" value="16"/>
+        <param name="max_ray_length_m" value="$(arg max_ray_length_m)"/>
+        <param name="min_time_between_msgs_sec" value="0.2"/>
+        <param name="voxel_carving_enabled" value="true"/>
+        <param name="color_mode" value="lambert_color"/>
+        <param name="use_const_weight" value="false"/>
+        <param name="use_freespace_pointcloud" value="$(arg use_freespace_pointcloud)"/>
+        <remap from="freespace_pointcloud" to="$(arg freespace_pointcloud)"/>
+        <param name="sensor_frame" value="$(arg pointcloud_frame)"/>
+        <param name="use_tf_transforms" value="true"/>
+        <param name="enable_icp" value="false"/>
+        <param name="icp_iterations" value="10"/>
+        <param name="verbose" value="true"/>
+        <!-- Method to update voxels' information: "fast" or "merged" -->
+        <param name="method" value="fast"/>
+        <!-- "color", "semantic" or "semantic_probability" -->
+        <param name="semantic_color_mode" value="semantic"/>
+        <param name="semantic_measurement_probability" value="0.6"/>
+        <!-- The only dynamic label we have right now are humans, with label 20 -->
+        <rosparam param="dynamic_semantic_labels">[]</rosparam>
+        <!-- Is this needed? -->
+        <param name="slice_level" value="0.5"/>
+        <param name="semantic_label_2_color_csv_filepath" value="$(arg semantic_label_file_path)"/>
+        <param name="total_number_of_labels" value="38"/>
+        <param name="publish_pointclouds" value="true"/>
+
+        <param name="generate_esdf" value="false"/>
+        <param name="publish_slices" value="false"/>
+
+        <param name="update_mesh_every_n_sec" value="0.2"/>
+        <param name="mesh_filename" value="$(find kimera_interface)/mesh_results/semantic_mesh.ply"/>
+    </node>
+
+
+<node pkg="tf" type="static_transform_publisher" name="static_frame_link" args="0 0 0 0 0 0 1 world $(arg odometry_frame) 100"/>
+
+</launch>

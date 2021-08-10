@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>kimera_interface</name>
+  <version>1.0.0</version>
+  <description>The kimera_interface package for 3D Semantic reconstruction</description>
+
+  <maintainer email="davidrozenberszki@gmail.com">David Rozenberszki</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin_simple</buildtool_depend>
+
+  <depend>opencv3_catkin</depend>
+  <depend>eigen_catkin</depend>
+
+  <depend>message_generation</depend>
+  <depend>message_runtime</depend>
+  <depend>image_transport</depend>
+  <depend>image_geometry</depend>
+  <depend>cv_bridge</depend>
+  <depend>rosbag</depend>
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_eigen</depend>
+  <depend>tf2_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>cmake_modules</depend>
+  <depend>nav_msgs</depend>
+  <depend>pcl_ros</depend>
+  <depend>pcl_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>jsk_recognition_msgs</depend>
+
+  <depend>kimera_semantics</depend>
+  <depend>kimera_semantics_ros</depend>
+</package>

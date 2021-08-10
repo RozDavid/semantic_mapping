@@ -1,0 +1,8 @@
+%YAML:1.0
+---
+image_width: 640
+image_height: 480
+camera_matrix: [ 6.13495452e+02, 0., 3.24663094e+02, 0., 6.13036550e+02,
+       2.40013692e+02, 0., 0., 1. ]
+distortion_coefficients: [ 0., 0., 0.,
+       0., 0. ]

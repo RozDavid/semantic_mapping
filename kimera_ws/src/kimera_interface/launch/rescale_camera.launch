@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<launch>
+
+    <arg name="camera_ns" default="camera" />
+
+    <arg name="color_camera_name" default="color" />
+    <arg name="depth_camera_name" default="depth" />
+    <arg name="scale" default="1.0" />
+
+    <arg name="param_file" default="k4a_camera_config.yaml" />
+
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        
+	<arg name="camera" value="$(arg camera_ns)"/>
+        
+	<arg name="color_width" value="1280"/>
+        <arg name="color_height" value="720"/>
+        <arg name="depth_width" value="1280"/>
+        <arg name="depth_height" value="720"/>
+
+	<arg name="enable_sync" value="true"/>
+        <arg name="align_depth" value="true"/>
+	<arg name="enable_pointcloud" value="false"/>
+
+	<arg name="depth_fps" value="6"/>
+        <arg name="color_fps" value="6"/>
+
+
+    </include>
+
+    <node name="color_image_undistort_node" pkg="image_undistort" type="image_undistort_node">
+       
+	<param name="input_camera_namespace" value="$(arg camera_ns)/$(arg color_camera_name)"/>
+        <param name="input_camera_info_from_ros_params" value = "false"/>
+	<param name="rename_radtan_plumb_bob" value = "true"/>
+        <param name="scale" value="$(arg scale)"/>
+
+
+        <param name="output_camera_info_source" value="ros_params"/>
+	<param name="output_frame" value="$(arg color_camera_name)_resized_optical_frame"/>
+        
+	<rosparam file="$(find kimera_interface)/cfg/$(arg param_file)" ns="output_camera"/>
+
+        <remap from="input/image" to="$(arg camera_ns)/$(arg color_camera_name)/image_raw"/>
+	<remap from="input/camera_info" to="$(arg camera_ns)/$(arg color_camera_name)/camera_info"/>
+
+        <remap from="/output/image" to="$(arg camera_ns)/$(arg color_camera_name)_resized/image_rect_color"/>
+        <remap from="/output/camera_info" to="$(arg camera_ns)/$(arg color_camera_name)_resized/camera_info"/>
+    </node>
+
+    <node name="depth_image_undistort_node" pkg="image_undistort" type="image_undistort_node">
+       
+	<param name="input_camera_namespace" value="$(arg camera_ns)/$(arg depth_camera_name)"/>
+        <param name="input_camera_info_from_ros_params" value = "false"/>
+	<param name="rename_radtan_plumb_bob" value = "true"/>
+        <param name="scale" value="$(arg scale)"/>
+
+
+        <param name="output_camera_info_source" value="ros_params"/>
+	<param name="output_frame" value="$(arg depth_camera_name)_resized_optical_frame"/>
+        
+	<rosparam file="$(find kimera_interface)/cfg/$(arg param_file)" ns="output_camera"/>
+
+        <remap from="input/image" to="$(arg camera_ns)/$(arg depth_camera_name)/image_rect_raw"/>
+	<remap from="input/camera_info" to="$(arg camera_ns)/$(arg depth_camera_name)/camera_info"/>
+
+        <remap from="/output/image" to="$(arg camera_ns)/$(arg depth_camera_name)_resized/image_rect_raw"/>
+        <remap from="/output/camera_info" to="$(arg camera_ns)/$(arg depth_camera_name)_resized/camera_info"/>
+    </node>
+
+</launch>

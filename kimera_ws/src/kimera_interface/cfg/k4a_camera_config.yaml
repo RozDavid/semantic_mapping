@@ -1,0 +1,4 @@
+distortion_coeffs: [0.089075, -0.034796, -0.000021, 0.000630, 0.000000]
+distortion_model: "plumb_bob"
+intrinsics: [600.715087890625, 600.434326171875, 638.1029663085938, 364.24505615234375] # (fx, fy, cx, cy)
+resolution: [1280, 720] #(width, height)

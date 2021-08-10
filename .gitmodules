@@ -1,0 +1,29 @@
+[submodule "kimera_ws/src/Kimera-Semantics"]
+	path = kimera_ws/src/Kimera-Semantics
+	url = https://github.com/RozDavid/Kimera-Semantics
+[submodule "kimera_ws/src/Kimera-VIO_ROS"]
+	path = kimera_ws/src/Kimera-VIO_ROS
+	url = https://github.com/MIT-SPARK/Kimera-VIO-ROS.git
+[submodule "kimera_ws/src/realsense-ros"]
+	path = kimera_ws/src/realsense-ros
+	url = https://github.com/IntelRealSense/realsense-ros.git
+[submodule "kimera_ws/src/zed-ros-wrapper"]
+	path = kimera_ws/src/zed-ros-wrapper
+	url = https://github.com/stereolabs/zed-ros-wrapper.git
+[submodule "kimera_ws/src/Azure_Kinect_ROS_Driver"]
+	path = kimera_ws/src/Azure_Kinect_ROS_Driver
+	url = https://github.com/microsoft/Azure_Kinect_ROS_Driver.git
+[submodule "kimera_ws/src/mask_rcnn_ros"]
+	path = kimera_ws/src/mask_rcnn_ros
+	url = https://github.com/RozDavid/mask_rcnn_ros.git
+[submodule "kimera_ws/src/depth_segmentation"]
+	path = kimera_ws/src/depth_segmentation
+	url = https://github.com/ethz-asl/depth_segmentation.git
+[submodule "habitat/habitat-lab"]
+	path = habitat/habitat-lab
+	url = https://github.com/facebookresearch/habitat-lab
+	shallow = true
+[submodule "habitat/habitat-sim"]
+	path = habitat/habitat-sim
+	url = https://github.com/facebookresearch/habitat-sim
+	shallow = true

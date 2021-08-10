@@ -1,0 +1,20 @@
+<launch>
+
+	<arg name="robot_name" default="timon_jetson" />
+	<arg name="base_width" default="0.16" />
+	<arg name="min_pwm_carpet" default="180" />
+	<arg name="min_pwm_hardwood" default="70" />
+
+	<!-- Do not set this parameter to be above 255!!! -->
+	<arg name="max_pwm" default="190" />
+	
+	<arg name="floor_type" default="carpet" /> # carpet, hardwood
+
+	<node pkg="openbot_navigation" type="twist_to_motor.py" name="twist_to_motor">
+		<param name="twist_topic" value="/$(arg robot_name)/cmd_vel" />
+		<param name="base_width" value="$(arg base_width)" />
+		<param name="min_pwm_carpet" value="$(arg min_pwm_carpet)" />
+		<param name="min_pwm_hardwood" value="$(arg min_pwm_hardwood)" />
+		<param name="max_pwm" value="$(arg max_pwm)" />
+	</node>
+</launch>

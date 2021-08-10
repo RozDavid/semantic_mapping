@@ -1,0 +1,5 @@
+## Modifz compression to png_level 3
+rosrun rqt_reconfigure rqt_reconfigure
+
+## Record compressed params
+rosbag record /tf /rgb/image_raw/compressed /rgb/camera_info /tf_static /depth_to_rgb/image_raw/compressedDepth /depth_to_rgb/camera_info /hp_laptop/ucoslam_pose

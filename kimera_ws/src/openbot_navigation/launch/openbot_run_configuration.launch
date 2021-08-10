@@ -1,0 +1,33 @@
+<launch>
+
+	<arg name="robot_name" default="hp_laptop" />
+	<arg name="odometry_topic" default="/$(arg robot_name)/ucoslam_pose" />
+
+	<arg name="package_path" default="$(find openbot_navigation)/" />
+	
+	<!-- launches twist to motor command node -->
+	<include file="$(arg package_path)/launch/openbot_twist.launch" />
+
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base" clear_params="true" output="screen">
+
+		<rosparam file="$(arg package_path)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+		<rosparam file="$(arg package_path)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+		<rosparam file="$(arg package_path)/cfg/local_costmap_params.yaml" command="load" ns="local_costmap"/>
+		<rosparam file="$(arg package_path)/cfg/global_costmap_params.yaml" command="load" ns="global_costmap"/>
+		<rosparam file="$(arg package_path)/cfg/openbot_planner_params.yaml" command="load"/>
+
+		
+		
+		<!--  remap to /odom topic -->
+		<remap from="/odom" to="$(arg odometry_topic)"/>
+
+		<!--  remap velocity commands topic -->
+		<remap from="/cmd_vel" to="/$(arg robot_name)/cmd_vel"/>
+
+		<param name="controller_frequency" value="10.0" />
+
+	</node>
+
+	<node type="rviz" name="rviz_openbot_planner" pkg="rviz" args="-d $(arg package_path)cfg/rviz_costmap_visualization.rviz"/>
+
+</launch>

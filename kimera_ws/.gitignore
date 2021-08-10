@@ -1,0 +1,11 @@
+build/
+devel/
+logs/
+.catkin_tools/
+.idea/
+src/*
+!src/semantic_segmentation/
+!src/kimera_interface/
+!src/openbot_navigation
+!src/vision_opencv_fc782bb.patch
+

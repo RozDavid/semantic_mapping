@@ -1,0 +1,9 @@
+<launch>
+
+<!-- Serialize ASA ROS specific messages to JSON strings-->
+<node name="esa_inference_node" pkg="semantic_segmentation" type="ros_inference.py" output="screen">
+
+</node>
+
+	
+</launch>

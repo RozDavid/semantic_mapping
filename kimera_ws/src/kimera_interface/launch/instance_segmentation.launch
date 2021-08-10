@@ -1,0 +1,59 @@
+<launch>
+
+    <!-- Communication -->
+    <arg name="pointcloud_topic" default="/kimera_semantics_node/surface_pointcloud"/>
+    <arg name="bounding_box_topic" default="semantics/instance_bounding_boxes"/>
+    <arg name="color_mapping_file" default="$(find kimera_interface)/cfg/sunrgbd_13_segmentation_mapping.csv"/>
+
+    <!-- Align pointcloud to the floor points -->
+    <arg name="align_pointcloud" default="false"/>
+    <arg name="aligned_pointcloud_topic" default="aligned_pcd"/>
+
+    <arg name="instance_pointcloud_topic" default="instance_pcd"/>
+
+    <!-- Segmentation labels -->
+    <arg name="target_label_indexes" default="[1,2,3,4,5,6,7,8,9,10,11,12,13]"/>
+
+    <!-- Clustering params -->
+    <arg name="cluster_tolerance" default="0.1"/>
+    <arg name="min_cluster_size" default="10"/>
+    <arg name="use_difference_of_normals" default="false"/>
+    <arg name="small_don_scale" default="0.1"/>
+    <arg name="large_don_scale" default="1"/>
+    <arg name="don_treshold" default="0.1"/>
+
+    <!-- Node params -->
+    <arg name="target_frequency" default="0.5"/>
+    <arg name="queue_size" default="5"/>
+
+
+    <node name="instance_segmentation_node" pkg="kimera_interface" type="instance_segmentation_node" output="screen"  clear_params="true">
+        <!-- Communication -->
+        <param name="pointcloud_topic" value="$(arg pointcloud_topic)"/>
+        <param name="bounding_box_topic" value="$(arg bounding_box_topic)"/>
+        <param name="label2color_mapping_path" value="$(arg color_mapping_file)"/>
+
+        <!-- Align pointcloud to the floor points -->
+        <param name="align_pointcloud" value="$(arg align_pointcloud)"/>
+        <param name="aligned_pointcloud_topic" value="$(arg aligned_pointcloud_topic)"/>
+
+        <param name="instance_pointcloud_topic" value="$(arg instance_pointcloud_topic)"/>
+
+        <!-- Segmentation labels -->
+        <rosparam param="target_label_indexes" subst_value="True">$(arg target_label_indexes)</rosparam>
+
+        <!-- Clustering params -->
+        <param name="cluster_tolerance" value="$(arg cluster_tolerance)"/>
+        <param name="min_cluster_size" value="$(arg min_cluster_size)"/>
+        <param name="use_difference_of_normals" value="$(arg use_difference_of_normals)"/>
+        <param name="small_don_scale" value="$(arg small_don_scale)"/>
+        <param name="large_don_scale" value="$(arg large_don_scale)"/>
+        <param name="don_treshold" value="$(arg don_treshold)"/>
+
+        <!-- Node params -->
+        <param name="target_frequency" value="$(arg target_frequency)"/>
+        <param name="queue_size" value="$(arg queue_size)"/>
+
+    </node>
+
+</launch>

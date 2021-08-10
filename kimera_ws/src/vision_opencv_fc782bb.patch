@@ -1,0 +1,13 @@
+diff --git a/cv_bridge/CMakeLists.txt b/cv_bridge/CMakeLists.txt
+index ef804b9..b57a1ef 100644
+--- a/cv_bridge/CMakeLists.txt
++++ b/cv_bridge/CMakeLists.txt
+@@ -8,7 +8,7 @@ if(NOT ANDROID)
+ 
+   if(PYTHONLIBS_VERSION_STRING VERSION_LESS "3.8")
+     # Debian Buster
+-    find_package(Boost REQUIRED python37)
++    find_package(Boost REQUIRED python3)
+   else()
+     # Ubuntu Focal
+     find_package(Boost REQUIRED python)
