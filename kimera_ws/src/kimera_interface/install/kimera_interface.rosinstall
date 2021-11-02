@@ -14,22 +14,22 @@
     local-name: gtsam
     uri: https://github.com/borglab/gtsam.git
     version: master
-    # Last tested commit: 342f30d148fae84c92ff71705c9e50e0a3683bda
+    # Last tested commit: 59d902760ea2e2eb407930007439259c0cb62fcf
 - git:
     local-name: opencv3_catkin
     uri: https://github.com/ethz-asl/opencv3_catkin.git
     version: master
-    # Last tested commit: 880da1510aa80a247b80adca32ac2941ddfa94ff
+    # Last tested commit: 934f93b0595ef9b340017b46acd720f51ac12056
 - git:
     local-name: opengv_catkin
     uri: https://github.com/ToniRV/opengv_catkin.git
     version: master
-    # Last tested commit: 6cf597ce9fea3e5eee991e96f42634a558dfab33
+    # Last tested commit: 7676b5157c0d239c82be52e979e54e5cf95987bc
 - git:
     local-name: pose_graph_tools
     uri: https://github.com/MIT-SPARK/pose_graph_tools.git
     version: master
-    # Last tested commit: 9ffe480feeac036cdf43a27c9c11637a382aa628
+    # Last tested commit: 9765291fc99db54ff31e326e78d426f750a655dc
 - git:
     local-name: dbow2_catkin
     uri: https://github.com/marcusabate/dbow2_catkin.git

@@ -10,7 +10,7 @@
     <param name="use_sim_time" value="$(arg should_use_sim_time)" />
     
     <!-- Play from BAG file -->
-    <arg name="play_bag" default="true"/>
+    <arg name="play_bag" default="false"/>
     <arg name="rosbag_rate" default="0.5"/>
     <arg name="bag_file" default=""/>
     <node name="player" pkg="rosbag" type="play" output="screen"
@@ -42,20 +42,19 @@
     <arg name="use_freespace_pointcloud" default="false"/>
     <arg name="freespace_pointcloud" default="/dev/null"/>
 
-    <arg name="rgb_encoding" default="raw"/> <!-- raw/compressed/theora-->
-    <arg name="depth_encoding" default="compressedDepth"/> <!-- raw/compressedDepth-->
+    <arg name="rgb_encoding" default="raw"/> <!-- raw|compressed|theora-->
+    <arg name="depth_encoding" default="compressedDepth"/> <!-- raw|compressedDepth-->
 
     <!-- Set the encoding for rosbag images types-->
     <group if="$(arg use_compressed_bag)">
-        
         <node name="republish_rgb" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_topic) raw out:=$(arg left_cam_topic)" />
         <node name="republish_depth" type="republish" pkg="image_transport" output="screen" args="compressedDepth in:=$(arg left_cam_depth_topic) raw out:=$(arg left_cam_depth_topic)" />
     </group>
 
     <group unless="$(arg use_compressed_bag)">
         <!-- Input Image encodings-->
-        <arg name="rgb_encoding" default="raw"/> <!-- raw/compressed/theora-->
-        <arg name="depth_encoding" default="raw"/> <!-- raw/compressedDepth-->
+        <arg name="rgb_encoding" default="raw"/> <!-- raw|compressed|theora-->
+        <arg name="depth_encoding" default="raw"/> <!-- raw|compressedDepth-->
     </group>
 
     <!-- Generate input pointcloud with semantic labels for kimera-semantics:
@@ -100,6 +99,5 @@
         <arg name="rotation_treshold"  value="$(arg rotation_treshold)"/>
         <arg name="timestamp_difference_limit"  value="$(arg timestamp_difference_limit)"/>
     </include>
-
 
 </launch>

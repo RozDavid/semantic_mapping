@@ -13,7 +13,7 @@ roslaunch \
   kimera_interface \
   ucoslam_realsense_semantic.launch \
   robot_hostname:=${ROBOT_NAME} \
-  metric_semantic_reconstruction:=false
-
-
+  metric_semantic_reconstruction:=false \
+  rgb_encoding:=raw \
+  depth_encoding:=raw
 

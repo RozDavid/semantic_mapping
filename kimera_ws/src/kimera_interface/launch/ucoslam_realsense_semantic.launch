@@ -10,9 +10,9 @@
     <param name="use_sim_time" value="$(arg should_use_sim_time)" />
     
     <!-- Play from BAG file -->
-    <arg name="play_bag" default="true"/>
+    <arg name="play_bag" default="false"/>
     <arg name="rosbag_rate" default="1.0"/>
-    <arg name="bag_file" default="$(find kimera_interface)/../../../../resources/eit_rsd_handheld.bag"/>
+    <arg name="bag_file" default=""/>
     <node name="player" pkg="rosbag" type="play" output="screen"
           args="--clock --quiet --rate $(arg rosbag_rate) $(arg bag_file)"  if="$(arg play_bag)">
     </node>
@@ -45,18 +45,16 @@
 
     <!-- Set the encoding for rosbag images types-->
     <group if="$(arg use_compressed_bag)">
-        
-        <arg name="rgb_encoding" default="compressed"/> <!-- raw/compressed/theora-->
-        <arg name="depth_encoding" default="compressedDepth"/> <!-- raw/compressedDepth-->
-
+        <arg name="rgb_encoding" default="compressed"/> <!-- raw|compressed|theora-->
+        <arg name="depth_encoding" default="compressedDepth"/> <!-- raw|compressedDepth-->
         <node name="republish_rgb" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_topic) raw out:=$(arg left_cam_topic)" />
         <node name="republish_depth" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_depth_topic) raw out:=$(arg left_cam_depth_topic)" />
     </group>
 
     <group unless="$(arg use_compressed_bag)">
         <!-- Input Image encodings-->
-        <arg name="rgb_encoding" default="raw"/> <!-- raw/compressed/theora-->
-        <arg name="depth_encoding" default="raw"/> <!-- raw/compressedDepth-->
+        <arg name="rgb_encoding" default="raw"/> <!-- raw|compressed|theora-->
+        <arg name="depth_encoding" default="raw"/> <!-- raw|compressedDepth-->
     </group>
 
     <!-- Generate input pointcloud with semantic labels for kimera-semantics:
@@ -70,7 +68,6 @@
     <arg name="timestamp_difference_limit" default="0.5"/>
 
     <node type="rviz" name="rviz_kimera_interface" pkg="rviz" args="-d $(find kimera_interface)/rviz/kimera_realsense_metric.rviz"/>
-
 
     <!-- Include the reconsruction pipeline-->
     <include file="$(find kimera_interface)/launch/reconstruction_pipeline.launch">
@@ -98,6 +95,5 @@
         <arg name="rotation_treshold"  value="$(arg rotation_treshold)"/>
         <arg name="timestamp_difference_limit"  value="$(arg timestamp_difference_limit)"/>
     </include>
-
 
 </launch>

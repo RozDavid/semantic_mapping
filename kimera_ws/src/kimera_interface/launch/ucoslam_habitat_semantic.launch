@@ -8,7 +8,7 @@
     <param name="use_sim_time" value="$(arg should_use_sim_time)" />
     
     <!-- Play from BAG file -->
-    <arg name="play_bag" default="true"/>
+    <arg name="play_bag" default="false"/>
     <arg name="rosbag_rate" default="1.0"/>
     <arg name="bag_file" default="$(find kimera_interface)/../../../../resources/habitat/frl_5_noise3.bag"/>
     <node name="player" pkg="rosbag" type="play" output="screen"
@@ -41,19 +41,16 @@
 
     <!-- Set the encoding for rosbag images types-->
     <group if="$(arg use_compressed_bag)">
-        
-        <arg name="rgb_encoding" default="compressed"/> <!-- raw/compressed/theora-->
-        <arg name="depth_encoding" default="compressedDepth"/> <!-- raw/compressedDepth-->
-
+        <arg name="rgb_encoding" default="compressed"/> <!-- raw|compressed|theora-->
+    <arg name="depth_encoding" default="compressedDepth"/> <!-- raw|compressedDepth-->
         <node name="republish_rgb" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_topic) raw out:=$(arg left_cam_topic)" />
-
         <node name="republish_depth" type="republish" pkg="image_transport" output="screen" args="compressed in:=$(arg left_cam_depth_topic) raw out:=$(arg left_cam_depth_topic)" />
     </group>
 
     <group unless="$(arg use_compressed_bag)">
         <!-- Input Image encodings-->
-        <arg name="rgb_encoding" default="raw"/> <!-- raw/compressed/theora-->
-        <arg name="depth_encoding" default="raw"/> <!-- raw/compressedDepth-->
+        <arg name="rgb_encoding" default="raw"/> <!-- raw|compressed|theora-->
+        <arg name="depth_encoding" default="raw"/> <!-- raw|compressedDepth-->
     </group>
 
     <!-- Generate input pointcloud with semantic labels for kimera-semantics:
@@ -69,10 +66,10 @@
     <node type="rviz" name="rviz_kimera_interface" pkg="rviz" args="-d $(find kimera_interface)/rviz/kimera_habitat_metric.rviz"/>
 
     <!-- Transform optical to SLAM frame, depends on the tf frame which one to choose-->
-     <node pkg="tf" type="static_transform_publisher" name="static_frame_pointcloud" args="0 0 0 0.5 -0.5 0.5 -0.5 $(arg sensor_frame) $(arg pointcloud_frame) 100"/>
+    <node pkg="tf" type="static_transform_publisher" name="static_frame_pointcloud" args="0 0 0 0.5 -0.5 0.5 -0.5 $(arg sensor_frame) $(arg pointcloud_frame) 100"/>
     <!--<node pkg="tf" type="static_transform_publisher" name="static_frame_pointcloud" args="0 0 0 0.0 0.0 0.0 1 $(arg sensor_frame) $(arg pointcloud_frame) 100"/>-->
     
-     <!-- Include the reconsruction pipeline-->  
+    <!-- Include the reconsruction pipeline-->
     <include file="$(find kimera_interface)/launch/reconstruction_pipeline.launch">
         <arg name="voxel_size" value="$(arg voxel_size)"/>ro
         <arg name="max_ray_length_m" value="$(arg max_ray_length_m)"/>
@@ -99,7 +96,4 @@
         <arg name="timestamp_difference_limit"  value="$(arg timestamp_difference_limit)"/>
     </include>
 
-
 </launch>
-
-
