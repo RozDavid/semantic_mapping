@@ -5,12 +5,10 @@ We make use of [Habitat-Sim](https://github.com/facebookresearch/habitat-sim) fo
 
 ## Installation
 
-As in the reconstruction pipeline we provide a conda environment, where all components are installed for convenience.
+We provide a setup script for the new conda environment that includes the Habitat simulation engines and interfacing libraries wit other ROS components. Be sure that you have all sbmodules initialized and updated, then execute:
 
-To install the conda env:
 ```
-cd config
-conda env create -f habitat_env.yml
+source setup.sh
 ```
 
 We are going to use the same catkin workspace for communication with ROS that we have previouslz created in kimera_ws. 

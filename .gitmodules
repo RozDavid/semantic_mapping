@@ -21,9 +21,9 @@
 	url = https://github.com/ethz-asl/depth_segmentation.git
 [submodule "habitat/habitat-lab"]
 	path = habitat/habitat-lab
-	url = https://github.com/facebookresearch/habitat-lab
+	url = git@github.com:facebookresearch/habitat-lab.git
 	shallow = true
 [submodule "habitat/habitat-sim"]
 	path = habitat/habitat-sim
-	url = https://github.com/facebookresearch/habitat-sim
+	url = git@github.com:facebookresearch/habitat-sim.git
 	shallow = true
