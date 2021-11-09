@@ -72,7 +72,7 @@ def make_cfg(settings, mesh_path):
     # Here you can specify the amount of displacement in a forward action and the turn angle
     agent_cfg = habitat_sim.agent.AgentConfiguration()
     agent_cfg.sensor_specifications = sensor_specs
-    agent_cfg.angular_friction = 0.0
+    # agent_cfg.angular_friction = 0.0
     agent_cfg.action_space = {
         "move_forward": habitat_sim.agent.ActionSpec(
             "move_forward", habitat_sim.agent.ActuationSpec(amount=0.04)
@@ -177,7 +177,7 @@ def displayer():
 
 
 if __name__ == "__main__":
-    #displayer()
+    displayer()
 else:
     show_video = False
     do_make_video = False
@@ -186,5 +186,3 @@ else:
 # import the maps module alone for topdown mapping
 if display:
     from habitat.utils.visualizations import maps
-
-
