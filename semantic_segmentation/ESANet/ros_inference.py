@@ -25,7 +25,7 @@ class ESAInference(object):
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         parser.set_common_args()
 
-        parser.add_argument("--segmentation_mode", type=int, default=0,
+        parser.add_argument("--segmentation_mode", type=int, default=1,
                             help='Choose what to use from the implemented modes: 0 - Semantic Segmentation and Color;'
                                  '1 - Only Semantic segmentation; 2 - only color segmentation')
 
@@ -215,7 +215,7 @@ class ESAInference(object):
 
     def show_image(self, img):
         cv2.imshow("Prediction image", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
-        cv2.waitKey(3)
+        cv2.waitKey(1)
 
 
 if __name__ == '__main__':
