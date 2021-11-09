@@ -56,7 +56,7 @@ class InteractiveSimulator(object):
     def parse_arguments(self, parser):
 
         # Parse arguments for global params
-        parser.add_argument('--mesh_path', type=str, default='/home/RozDavid/data/Replica/frl_apartment_4/habitat/mesh_semantic.ply',
+        parser.add_argument('--mesh_path', type=str, default='/media/cuda/ssd/semantic_mapping/Replica-Dataset/dataset/frl_apartment_4/habitat/mesh_semantic.ply',
                             help='The Replica mesh path mesh, that provides the model for simulation')
         parser.add_argument('--camera_config', type=str, default='../config/calib_k4a.yml',
                             help='The camera parameters of the virtual camera that simulates the image')
@@ -91,7 +91,7 @@ class InteractiveSimulator(object):
                             help='To replay recorded trajectory from numpy array of poses')
         parser.add_argument('--gaussian_sigma', type=int, default=0.5,
                             help='Sigma of the Gaussian blur')
-        parser.add_argument('--motion_blur_weight', type=int, default=1,
+        parser.add_argument('--motion_blur_weight', type=int, default=0.1,
                             help='Weighting of the motion blur')
 
         return parser.parse_args()
@@ -237,6 +237,8 @@ class InteractiveSimulator(object):
         semantic = semantic.astype(np.uint8)
 
         depth = observation["depth_sensor"]
+        depth = np.float32(depth)
+        # depth = np.uint16(depth)
 
         rgb, depth, semantic = self.motion_blur(rgb, depth, semantic)
 
