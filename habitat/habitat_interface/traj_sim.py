@@ -56,7 +56,8 @@ class InteractiveSimulator(object):
     def parse_arguments(self, parser):
 
         # Parse arguments for global params
-        parser.add_argument('--mesh_path', type=str, default='/media/cuda/ssd/semantic_mapping/Replica-Dataset/dataset/frl_apartment_4/habitat/mesh_semantic.ply',
+        #you can create this folder here, and add a symlink
+        parser.add_argument('--mesh_path', type=str, default='./Replica-Dataset/dataset/frl_apartment_4/habitat/mesh_semantic.ply',
                             help='The Replica mesh path mesh, that provides the model for simulation')
         parser.add_argument('--camera_config', type=str, default='../config/calib_k4a.yml',
                             help='The camera parameters of the virtual camera that simulates the image')
