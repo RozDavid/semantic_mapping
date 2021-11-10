@@ -215,7 +215,7 @@ class ESAInference(object):
 
     def show_image(self, img):
         cv2.imshow("Prediction image", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
-        cv2.waitKey(1)
+        cv2.waitKey(3)
 
 
 if __name__ == '__main__':
