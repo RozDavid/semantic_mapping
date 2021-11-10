@@ -92,8 +92,10 @@ class InteractiveSimulator(object):
                             help='To replay recorded trajectory from numpy array of poses')
         parser.add_argument('--gaussian_sigma', type=int, default=0.5,
                             help='Sigma of the Gaussian blur')
-        parser.add_argument('--motion_blur_weight', type=int, default=0.1,
+        parser.add_argument('--motion_blur_weight', type=int, default=1,
                             help='Weighting of the motion blur')
+        parser.add_argument('--encoding', type=int, default=32,
+                            help='Check your depth camera output for what encoding does it uses. 32 is for float32, 16 is for uint 16')
 
         return parser.parse_args()
 
@@ -238,8 +240,10 @@ class InteractiveSimulator(object):
         semantic = semantic.astype(np.uint8)
 
         depth = observation["depth_sensor"]
-        depth = np.float32(depth)
-        # depth = np.uint16(depth)
+        if args.encoding == 32:
+            depth = np.float32(depth)
+        else:
+            depth = np.uint16(depth)
 
         rgb, depth, semantic = self.motion_blur(rgb, depth, semantic)
 
