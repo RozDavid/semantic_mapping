@@ -7,7 +7,7 @@ import time
 
 import git
 import imageio
-import magnum as mn
+#import magnum as mn
 import numpy as np
 import cv2
 import pickle
@@ -56,16 +56,16 @@ class InteractiveSimulator(object):
     def parse_arguments(self, parser):
 
         # Parse arguments for global params
-        #you can create this folder here, and add a symlink
-        parser.add_argument('--mesh_path', type=str, default='./Replica-Dataset/dataset/frl_apartment_4/habitat/mesh_semantic.ply',
+        parser.add_argument('--mesh_path', type=str, default='../data/apartment_0/habitat/mesh_semantic.ply',
                             help='The Replica mesh path mesh, that provides the model for simulation')
-        parser.add_argument('--camera_config', type=str, default='../config/calib_k4a.yml',
+        parser.add_argument('--camera_config', type=str, default='../../semantic_segmentation/rendering/config/calib_k4a.yml',
                             help='The camera parameters of the virtual camera that simulates the image')
         parser.add_argument('--robot_frame', type=str, default='habitat_robot_base',
                             help='The frame of the robot sensor, where the camera pose is tracked')
         parser.add_argument('--parent_frame', type=str, default="habitat_odometry_frame",
                             help='The world or the odometry frame, where we get the sensor frame. '
                                  'Should be aligned to the mesh')
+
         parser.add_argument('--image_topic_name', type=str, default='/habitat/rgb/image_raw',
                             help='The images will be savd under this topic')
         parser.add_argument('--depth_topic_name', type=str, default="/habitat/depth/image_raw",
@@ -80,6 +80,11 @@ class InteractiveSimulator(object):
         parser.add_argument('--compressed_semantic_topic_name', type=str, default='/habitat/semantics/image_raw/compressed',
                             help='The compressed semantic images will be saved under this topic')
 
+        parser.add_argument('--write_bag', type=bool, default=False,
+                            help='To compress images saved to rosbag')
+        parser.add_argument('--publish_tf', type=bool, default=True,
+                            help='To compress images saved to rosbag')
+
         parser.add_argument('--output_bag_name', type=str, default="../data/output.bag",
                             help='The name and relative path of the output bag file')
         parser.add_argument('--output_agent_pose_name', type=str, default="../data/agent_states.npy",
@@ -92,7 +97,7 @@ class InteractiveSimulator(object):
                             help='To replay recorded trajectory from numpy array of poses')
         parser.add_argument('--gaussian_sigma', type=int, default=0.5,
                             help='Sigma of the Gaussian blur')
-        parser.add_argument('--motion_blur_weight', type=int, default=1,
+        parser.add_argument('--motion_blur_weight', type=int, default=0.001,
                             help='Weighting of the motion blur')
         parser.add_argument('--encoding', type=int, default=32,
                             help='Check your depth camera output for what encoding does it uses. 32 is for float32, 16 is for uint 16')
@@ -131,6 +136,8 @@ class InteractiveSimulator(object):
         self.prev_semantic = []
 
     def init_ros(self, args):
+        self.write_bag = args.write_bag
+        self.publish_tf = args.publish_tf
 
         self.compressed = args.compressed
         self.output_agent_pose_name = args.output_agent_pose_name
@@ -240,7 +247,7 @@ class InteractiveSimulator(object):
         semantic = semantic.astype(np.uint8)
 
         depth = observation["depth_sensor"]
-        if args.encoding == 32:
+        if self.args.encoding == 32:
             depth = np.float32(depth)
         else:
             depth = np.uint16(depth)
@@ -261,7 +268,7 @@ class InteractiveSimulator(object):
         cv2.imshow("Rendered sensors", cv2.resize(dst, (0, 0), fx=0.5, fy=0.5))
         cv2.waitKey(1)
 
-
+    # TODO: refactor: write bag and publish messages are independent.
     def write_to_bag(self, rgb, semantic, depth, compressed=False):
 
         timestamp = rospy.Time.now()
@@ -286,6 +293,11 @@ class InteractiveSimulator(object):
 
         self.publish_msgs(image_color, image_semantic, image_depth, tf_msg, timestamp)
 
+
+        # WRITE ROSBAG
+        if not self.write_bag:
+            return
+        
         if compressed:
             image_color = CompressedImage()
             image_color.format = "jpeg"
@@ -310,15 +322,17 @@ class InteractiveSimulator(object):
             self.bag.write(self.depth_topic_name, image_depth)
             self.bag.write(self.depth_info_topic_name, depth_info)
             self.bag.write(self.semantic_topic_name, image_semantic)
-        #
-        # self.bag.write('/tf', tf_msg)
+        
+        if self.publish_tf:
+            self.bag.write('/tf', tf_msg)
 
     def publish_msgs(self, color_msg, semantic_msg, depth_msg, tf_msg, timestamp):
 
         br = tf2_ros.TransformBroadcaster()
 
-        # for transform in tf_msg.transforms:
-        #      br.sendTransform(transform)
+        if self.publish_tf:
+            for transform in tf_msg.transforms:
+                br.sendTransform(transform)
 
         rgb_info = self.rgb_info_msg
         rgb_info.header.stamp = timestamp
