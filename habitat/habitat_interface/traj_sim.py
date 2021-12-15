@@ -56,7 +56,7 @@ class InteractiveSimulator(object):
     def parse_arguments(self, parser):
 
         # Parse arguments for global params
-        parser.add_argument('--mesh_path', type=str, default='../data/apartment_0/habitat/mesh_semantic.ply',
+        parser.add_argument('--mesh_path', type=str, default='../../data/apartment_0/habitat/mesh_semantic.ply',
                             help='The Replica mesh path mesh, that provides the model for simulation')
         parser.add_argument('--camera_config', type=str, default='../../semantic_segmentation/rendering/config/calib_k4a.yml',
                             help='The camera parameters of the virtual camera that simulates the image')
@@ -85,9 +85,9 @@ class InteractiveSimulator(object):
         parser.add_argument('--publish_tf', type=bool, default=True,
                             help='To compress images saved to rosbag')
 
-        parser.add_argument('--output_bag_name', type=str, default="../data/output.bag",
+        parser.add_argument('--output_bag_name', type=str, default="../../data/output.bag",
                             help='The name and relative path of the output bag file')
-        parser.add_argument('--output_agent_pose_name', type=str, default="../data/agent_states.npy",
+        parser.add_argument('--output_agent_pose_name', type=str, default="../../data/agent_states.npy",
                             help='The name and relative path of the output agent pose file')
         parser.add_argument('--target_fps', type=int, default=5,
                             help='The number of frames to render per second')
